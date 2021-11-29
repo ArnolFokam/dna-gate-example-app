@@ -77,7 +77,7 @@ const SignUp = (props: any) => {
     }
 
     return <div className="flex flex-col h-full bg-gray-100">
-        {showModal && <WebcamModal setHandleCloseModal={() => setShowModal(false)} setvalidatePicture={setValidatePicture} />}
+        {showModal && <WebcamModal title="Biometric Details Saving" setHandleCloseModal={() => setShowModal(false)} setvalidatePicture={setValidatePicture} />}
         {/*Auth Card Container*/}
         <div className="grid place-items-center mx-2 my-20 py-20">
             {/*Auth Card*/}
@@ -109,7 +109,7 @@ const SignUp = (props: any) => {
                         if (!values.name) {
                             errors.name = 'Required';
                         } else if (
-                            !/^[a-zA-Z'-]+$/i.test(values.name)
+                            !/^[-'a-zA-ZÀ-ÖØ-öø-ſ]+$/i.test(values.name)
                         ) {
                             errors.name = 'Should be a valid first name';
                         }

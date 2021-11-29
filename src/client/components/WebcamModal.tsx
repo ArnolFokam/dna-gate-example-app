@@ -4,9 +4,10 @@ import Webcam from "react-webcam";
 interface WebcamModalProps {
   setHandleCloseModal: Function;
   setvalidatePicture: Function;
+  title?: string;
 };
 
-const WebcamModal = ({ setHandleCloseModal, setvalidatePicture }: WebcamModalProps) => {
+const WebcamModal = ({ setHandleCloseModal, setvalidatePicture, title }: WebcamModalProps) => {
   const webcamRef = React.useRef<Webcam>(null);
 
   const capture = React.useCallback(
@@ -31,16 +32,16 @@ const WebcamModal = ({ setHandleCloseModal, setvalidatePicture }: WebcamModalPro
             <div className="sm:flex sm:items-start">
               <div className="mt-3  sm:mt-0 sm:ml-4 sm:text-left">
                 <h3 className="text-xl text-center leading-6 font-medium text-gray-900" id="modal-title">
-                  Face Authentication
+                  {title || "Face Authentication"}
                 </h3>
                 <div className="pt-8 pb-2">
                   <p>
                     Please make sure that:
                   </p>
                   <ul className="list-disc list-inside">
-                    <li>There is enough lightning in the room.</li>
+                    <li>There is enough lighting in the room.</li>
                     <li>Your face is clearly visible.</li>
-                    <li>You have no temporay accesories on your face.</li>
+                    <li>You don't have any temporary accessories on your face.</li>
                     <li>Your face is close enough to the camera.</li>
                   </ul>
                 </div>

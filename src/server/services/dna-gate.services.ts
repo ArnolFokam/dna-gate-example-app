@@ -71,7 +71,7 @@ export const verifyFacialEmbedding = async (face: string, faceId: string) => {
         }).catch(err => {
             return {
                 "match": null,
-                "error": err.response.body.detail
+                "error": (err.response && err.response.body) ? err.response.body.detail : "Unknown error"
             };
         });
 }

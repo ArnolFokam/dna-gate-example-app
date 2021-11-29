@@ -17,7 +17,7 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js"],
   },
   plugins: [
-    new Dotenv()
+    process.env.NODE_ENV == "production" ? undefined : new Dotenv()
   ],
     // don't compile node_modules
   externals: [nodeExternals()],

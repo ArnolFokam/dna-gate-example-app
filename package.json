@@ -68,7 +68,7 @@
     "build": "npm run build:client && npm run build:server",
     "build:client": "craco build",
     "build:server": "webpack --config webpack.config.server.js",
-    "build:server:nodemon": "nodemon build/server.js"
+    "build:server:nodemon": "npm install -g nodemon && nodemon build/server.js"
   },
   "eslintConfig": {
     "extends": [

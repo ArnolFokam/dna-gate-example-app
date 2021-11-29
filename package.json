@@ -69,7 +69,7 @@
     "build:client": "craco build",
     "build:server": "webpack --config webpack.config.server.js",
     "build:server:nodemon": "nodemon build/server.js",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install npm && run build"
+    "heroku-postbuild": "npm install && npm run build"
   },
   "eslintConfig": {
     "extends": [

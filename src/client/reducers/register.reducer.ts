@@ -38,6 +38,8 @@ export const RegisterSlice = createSlice({
         builder
             .addCase(handleRegister.pending, (state, action) => {
                 state.loading = true;
+                state.registrationFailure = false;
+                state.registrationSuccess = false;
             })
             .addCase(handleRegister.rejected, (state, action) => {
                 console.log((action.error as AxiosError).response!);

@@ -6,7 +6,8 @@ import NotyfContext from "../config/NotyfContext";
 import { handleRegister, reset } from "../reducers/register.reducer";
 import WebcamModal from "../components/WebcamModal";
 
-const SignUp = (props: any) => {
+const SignUp = () => {
+    const { push } = useHistory();
     const dispatch = useAppDispatch();
     const notyf = useContext(NotyfContext);
 
@@ -15,34 +16,30 @@ const SignUp = (props: any) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const isAuthenticated = useAppSelector(state => state.authentication.isAuthenticated);
-    const successMessage = useAppSelector(state => state.register.successMessage);
-    const errorMessage = useAppSelector(state => state.register.errorMessage);
-    const registrationSuccess = useAppSelector(state => state.register.registrationSuccess);
     const loading = useAppSelector(state => state.register.loading);
+    const errorMessage = useAppSelector(state => state.register.errorMessage);
+    const successMessage = useAppSelector(state => state.register.successMessage);
+    const isAuthenticated = useAppSelector(state => state.authentication.isAuthenticated);
+    const registrationFailure = useAppSelector(state => state.register.registrationFailure);
+    const registrationSuccess = useAppSelector(state => state.register.registrationSuccess);
 
-    const { push } = useHistory();
-
-    useEffect(
-        () => () => {
-            dispatch(reset());
-        },
-        [dispatch]);
-
-    useEffect(() => {
-        if (successMessage) {
-            notyf.success(successMessage);
-        }
-        // eslint-disable-next-line
-    }, [successMessage]);
+    useEffect(() => () => {
+        dispatch(reset());
+    }, [dispatch]);
 
     useEffect(() => {
         if (registrationSuccess) {
             push("/login");
-        } else if (errorMessage) {
+            notyf.success(successMessage);
+        }
+        // eslint-disable-next-line
+    }, [registrationSuccess, push, notyf, successMessage]);
+
+    useEffect(() => {
+        if (registrationFailure && errorMessage) {
             notyf.error(errorMessage);
         }
-    }, [registrationSuccess, errorMessage, push, notyf]);
+    }, [registrationFailure, errorMessage, notyf]);
 
     const setValidatePicture = async (image: any) => {
         setShowModal(false);

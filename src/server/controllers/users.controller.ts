@@ -9,7 +9,7 @@ export const getCurrentUser = async (req: any, res: any, next: NextFunction) => 
 
     UserSchema.findOne({ email: email }, (err: any, user: any) => {
         if (err) res.status(500).send({ message: err });
-        if (!user) res.status(404).send({ message: "Unknown user!" });
+        if (!user) res.status(404).send({ message: "Unknown user" });
 
         res.status(200).send({
             name: user.name,

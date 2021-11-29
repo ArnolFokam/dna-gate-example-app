@@ -43,7 +43,7 @@ export const saveFacialEmbedding = async (face: string) => {
         }).catch(err => {
             return {
                 "biometricId": null,
-                "error": err.response.body.detail
+                "error": (err.response && err.response.body) ? err.response.body.detail : "Unknown error"
             };
         });
 }

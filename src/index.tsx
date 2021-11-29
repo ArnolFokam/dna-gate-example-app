@@ -1,12 +1,27 @@
+import './client/index.css';
+import 'notyf/notyf.min.css';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { Provider } from 'react-redux';
+
+import App from './client/App';
+import setupAxiosInterceptors from './client/config/axios-interceptor';
+import getStore from './client/config/store';
+import { bindActionCreators } from 'redux';
+import { clearAuthentication } from './client/reducers/authentication.reducer';
+import reportWebVitals from './client/reportWebVitals';
+
+const store = getStore();
+
+const actions = bindActionCreators({ clearAuthentication }, store.dispatch);
+setupAxiosInterceptors(() => actions.clearAuthentication('login.error.unauthorized'));
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

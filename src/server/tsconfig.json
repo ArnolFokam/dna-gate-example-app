@@ -1,0 +1,19 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+      "outDir": "../../dist",
+      "noEmit": false,
+      "sourceMap": true,
+      "module": "esnext",
+      "strict": true,
+      "target": "esnext",
+      "moduleResolution": "node",
+      "baseUrl": "./",
+      "paths": {
+        "*": ["*"]
+      },
+      "isolatedModules": true
+    },
+    "exclude": ["../../build", "../client"],
+    "include": ["."]
+  }

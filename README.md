@@ -1,46 +1,59 @@
-# Getting Started with Create React App
+## About The Project
+This is the frontend (dashboard) of DNA Gate, a SaaS app for robust biometric authentication. 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Check this [link](https://github.com/ArnolFokam/dna-gate) for more information.
 
-## Available Scripts
+### Built With
 
-In the project directory, you can run:
+* [React](https://reactjs.org/)
+* [Redux Toolkit](https://redux-toolkit.js.org/)
+* [Windmill ReactUI](https://windmillui.com/react-ui/)
+* [MongoDB](mongodb.com)
+* [Express](https://expressjs.com/)
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Getting Started
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+1. Clone the repository
+2. Enter the project's directory and edit the .env file as follows
+```
+SECRET_KEY=supersecretkey
+STRIPE_SECRET_KEY=sk_test_
+REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_test_
 
-### `npm test`
+DNA_GATE_API_KEY=you DNA Gate api ley available through the dashboard (key management section)
+DNA_GATE_URL=the link to your DNA Gate backend
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+MONGODB_URI=link to a running instance of mongodb (eg. mongodb://localhost:27017/dna-gate-demo-app)
 
-### `npm run build`
+NODE_ENV=development
+```
+4. Run ```npm install```
+5. Run ```npm run dev``` to run a development version of the project
+6. Run ```npm run build && npm run build:server:nodemon``` to run a production version of the project. 
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Note: 
+- you should have NODE_ENV=production in the .env if you are running a production version.
+- You must set ```STRIPE_SECRET_KEY``` and ```REACT_APP_STRIPE_PUBLISHABLE_KEY``` in the **.env** file accordingly to have the payment functionality of the exmaple app. See [docs](https://stripe.com/docs/keys).
+You should have the frontend of the app front end up and running at [http://localhost:5000](http://localhost:5000).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## License
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Distributed under the Apache 2.0 License. See `LICENSE.txt` for more information.
 
-### `npm run eject`
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Contact
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Arnol Fokam - [@ArnolFokam](https://twitter.com/arnolfokam)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Project Link: [https://github.com/ArnolFokam/dna-gate](https://github.com/ArnolFokam/dna-gate-backend)
 
-## Learn More
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Acknowledgments
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+* [Modzy](https://www.modzy.com/) (Computer Vision pre-trained models)
+
+<p align="right">(<a href="#top">back to top</a>)</p>

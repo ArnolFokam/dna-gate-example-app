@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { login } from "../reducers/authentication.reducer";
+import { clearAuth, login } from "../reducers/authentication.reducer";
 import { Field, Form, Formik, ErrorMessage } from 'formik';
 import { useAppDispatch, useAppSelector } from "../config/store";
 
@@ -41,6 +41,10 @@ const Login = () => {
     };
 
     useEffect(() => {
+        
+    }, []);
+
+    useEffect(() => {
         if (loginSuccess) {
             setUseFace(false);
             setIsSigningIn(false);
@@ -54,6 +58,7 @@ const Login = () => {
             setUseFace(true);
             setIsSigningIn(false);
             notyf.error(errorMessage);
+            dispatch(clearAuth());
         }
     }, [errorMessage, loginError, notyf]);
 

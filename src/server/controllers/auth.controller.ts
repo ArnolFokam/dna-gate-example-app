@@ -48,7 +48,7 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
 
     UserSchema.findOne({ email: username }, function (err: any, user: any) {
         if (err) return res.status(500).send({ message: err });
-        if (!user) return res.status(404).send({ message: "Incorrect email" });
+        if (!user) return res.status(404).send({ message: "Incorrect credentials" });
 
         bcrypt.compare(password, user.password, function(err: any, result: any) {
             if (err) res.status(500).send({ message: err });
@@ -74,7 +74,7 @@ export const signinwithface = async (req: Request, res: Response, next: NextFunc
 
     UserSchema.findOne({ email: username }, async function (err: any, user: any) {
         if (err) return res.status(500).send({ message: err });
-        if (!user) return res.status(404).send({ message: "Incorrect email" });
+        if (!user) return res.status(404).send({ message: "Incorrect credentials" });
 
         const {match, error} = await verifyFacialEmbedding(image, user.biometricId);
         if (error) {
@@ -107,7 +107,7 @@ export const checkFacialIdentity = async (req: any, res: any, next: NextFunction
     
     UserSchema.findOne({ email: userEmail }, async function (err: any, user: any) {
         if (err) return res.status(500).send({ message: err });
-        if (!user) return res.status(404).send({ message: "Incorrect email" });
+        if (!user) return res.status(404).send({ message: "Incorrect credentials" });
 
         const {match, error} = await verifyFacialEmbedding(image, user.biometricId);
         if (error) {

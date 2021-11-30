@@ -117,15 +117,15 @@ export const AuthenticationSlice = createSlice({
         authError(state, action) {
             return {
                 ...state,
-                showModalLogin: true,
                 redirectMessage: action.payload,
             };
         },
         clearAuth(state) {
             return {
                 ...state,
+                loginError: false,
+                loginMessage: null,
                 loading: false,
-                showModalLogin: true,
                 isAuthenticated: false,
             };
         },

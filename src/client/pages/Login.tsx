@@ -60,7 +60,7 @@ const Login = () => {
             notyf.error(errorMessage);
             dispatch(clearAuth());
         }
-    }, [errorMessage, loginError, notyf]);
+    }, [errorMessage, loginError, notyf, dispatch]);
 
     const location = useLocation();
     const { from } = (location.state as any) || { from: { pathname: '/', search: location.search } };

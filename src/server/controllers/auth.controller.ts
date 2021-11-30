@@ -38,7 +38,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
             });
 
             newUser.save();
-            res.send({ message: "User was registered successfully!" });
+            res.send({ message: "User was registered successfully" });
         });
     });
 }
@@ -48,13 +48,13 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
 
     UserSchema.findOne({ email: username }, function (err: any, user: any) {
         if (err) return res.status(500).send({ message: err });
-        if (!user) return res.status(404).send({ message: "Incorrect email!" });
+        if (!user) return res.status(404).send({ message: "Incorrect email" });
 
         bcrypt.compare(password, user.password, function(err: any, result: any) {
             if (err) res.status(500).send({ message: err });
             if (result == false) return res.status(401).send({
                 accessToken: null,
-                message: "Incorrect Password!"
+                message: "Incorrect Password"
               });
 
               const token = jwt.sign({ email: user.email }, SECRET_KEY, {
@@ -74,7 +74,7 @@ export const signinwithface = async (req: Request, res: Response, next: NextFunc
 
     UserSchema.findOne({ email: username }, async function (err: any, user: any) {
         if (err) return res.status(500).send({ message: err });
-        if (!user) return res.status(404).send({ message: "Incorrect email!" });
+        if (!user) return res.status(404).send({ message: "Incorrect email" });
 
         const {match, error} = await verifyFacialEmbedding(image, user.biometricId);
         if (error) {
@@ -107,7 +107,7 @@ export const checkFacialIdentity = async (req: any, res: any, next: NextFunction
     
     UserSchema.findOne({ email: userEmail }, async function (err: any, user: any) {
         if (err) return res.status(500).send({ message: err });
-        if (!user) return res.status(404).send({ message: "Incorrect email!" });
+        if (!user) return res.status(404).send({ message: "Incorrect email" });
 
         const {match, error} = await verifyFacialEmbedding(image, user.biometricId);
         if (error) {

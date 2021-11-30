@@ -7,19 +7,21 @@ import { Link, Redirect, useLocation } from "react-router-dom";
 import NotyfContext from "../config/NotyfContext";
 import WebcamModal from "../components/WebcamModal";
 
-const Login = (props: any) => {
+const Login = () => {
     const dispatch = useAppDispatch();
     const notyf = useContext(NotyfContext);
-    const [showModal, setShowModal] = useState(false);
+
     const [email, setEmail] = useState('');
     const [useFace, setUseFace] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [isSigningIn, setIsSigningIn] = useState(false);
+    
     const isAuthenticated = useAppSelector(state => state.authentication.isAuthenticated);
     const loginError = useAppSelector(state => state.authentication.loginError);
     const errorMessage = useAppSelector(state => state.authentication.errorMessage);
     const loginSuccess = useAppSelector(state => state.authentication.loginSuccess);
-    const [isSigningIn, setIsSigningIn] = useState(false);
 
-    const handleLogin = ({
+    const handleLoginWithPassword = ({
         email,
         password
     }: any) => {
@@ -32,7 +34,7 @@ const Login = (props: any) => {
         setShowModal(true);
     }
 
-    const setValidatePicture = (image: any) => {
+    const handleLoginWithFace = (image: any) => {
         setShowModal(false);
         setIsSigningIn(true);
         dispatch(login(email, undefined, image));
@@ -40,22 +42,16 @@ const Login = (props: any) => {
 
     useEffect(() => {
         if (loginSuccess) {
-            setIsSigningIn(false);
             setUseFace(false);
+            setIsSigningIn(false);
             notyf.success("Successful authentication");
         }
         // eslint-disable-next-line
-    }, [loginSuccess]);
-
-    useEffect(() => {
-        if (!isSigningIn) {
-            setUseFace(false);
-        }
-        // eslint-disable-next-line
-    }, [isSigningIn]);
+    }, [loginSuccess, notyf]);
 
     useEffect(() => {
         if (errorMessage && loginError) {
+            setUseFace(true);
             setIsSigningIn(false);
             notyf.error(errorMessage);
         }
@@ -76,7 +72,8 @@ const Login = (props: any) => {
         {showModal && <WebcamModal setHandleCloseModal={() => {
             setUseFace(false);
             setShowModal(false);
-        }} setvalidatePicture={setValidatePicture} />}
+            setIsSigningIn(false);
+        }} setvalidatePicture={handleLoginWithFace} />}
         {/*Auth Card Container*/}
         <div className="grid place-items-center mx-2 my-20 py-20">
             {/*Auth Card*/}
@@ -115,10 +112,11 @@ const Login = (props: any) => {
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
+                        setSubmitting(true);
                         if (useFace) {
                             handleModalShow(values.email);
                         } else {
-                            handleLogin(values);
+                            handleLoginWithPassword(values);
                         }
                         setSubmitting(false);
                     }}

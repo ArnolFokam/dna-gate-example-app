@@ -5,10 +5,10 @@ import { logout } from '../reducers/authentication.reducer';
 import NotyfContext from "../config/NotyfContext";
 import WebcamModal from './WebcamModal';
 import { checkMatch } from '../reducers/veri-face.reducer';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 
 const CheckoutForm = ({ stripe, elements, clientSecret }: any) => {
   const dispatch = useAppDispatch();
-  const [name, setName] = useState('');
   const notyf = useContext(NotyfContext);
   const [message, setMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -18,10 +18,6 @@ const CheckoutForm = ({ stripe, elements, clientSecret }: any) => {
   const requestFailure = useAppSelector(state => state.veriFace.requestFailure);
   const errorMessage = useAppSelector(state => state.veriFace.errorMessage);
   const requestSuccess = useAppSelector(state => state.veriFace.requestSuccess);
-
-  const handleChange = (event: any) => {
-    setName(event.target.value);
-  }
 
   const handleLogout = () => {
     dispatch(logout());
@@ -43,10 +39,7 @@ const CheckoutForm = ({ stripe, elements, clientSecret }: any) => {
     setSubmitting(false);
   }
 
-  const handleSubmit = async (event: any) => {
-    // We don't want to let default form submission happen here,
-    // which would refresh the page.
-    event.preventDefault();
+  const handleSubmit = async (name: string) => {
 
     if (!stripe || !elements) {
       // Stripe.js has not yet loaded.
@@ -91,7 +84,7 @@ const CheckoutForm = ({ stripe, elements, clientSecret }: any) => {
         pay();
       }
     }
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [requestSuccess]);
 
   useEffect(() => {
@@ -101,33 +94,60 @@ const CheckoutForm = ({ stripe, elements, clientSecret }: any) => {
       setSubmitting(false);
     }
 
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [requestFailure, notyf]);
 
   return (
-    <form id="payment-form" onSubmit={handleSubmit}>
-      {showModal && <WebcamModal setHandleCloseModal={() => setShowModal(false)} setvalidatePicture={setValidatePicture} />}
-      <input required
-        className="shadow appearance-none border rounded w-full mt-6 mb-3 py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        id="name" type="text" placeholder="Enter you legal name" value={name} onChange={handleChange} />
-      <div className="py-6">
-        <CardElement />
-      </div>
-      {/**add notif */}
-      {message && <div id="messages" className="text-sm text-red-700" role="alert">{message}</div>}
-      <div className="flex justify-between item-center py-5">
-        <button onClick={handleLogout}
-          className="bg-gray-700 hover:bg-gray-500 text-white font-bold py-2 px-4 border-b-4 border-gray-800 hover:border-gray-600 rounded">
-          Logout
-        </button>
+    <Formik
+      initialValues={{
+        name: '',
+      }}
+      validate={values => {
+        const errors = {} as any;
 
-        <button type="submit" form="payment-form" disabled={!stripe || submitting}
-          className="flex items-center bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 border-b-4 border-red-700 hover:border-red-500 rounded">
-          {submitting && <div className="animate-spin rounded-full mr-3 h-4 w-4 border-b-2 border-white-900"></div>}
-          buy now
-        </button>
-      </div>
-    </form>
+        if (!values.name) {
+          errors.name = 'Required';
+        } else if (
+          !/^[a-z]([-']?[a-z]+)*( [a-z]([-']?[a-z]+)*)+$/i.test(values.name)
+        ) {
+          errors.name = 'Enter a valid full name'
+        }
+
+        return errors;
+      }}
+      onSubmit={(values) => {
+        handleSubmit(values.name);
+      }}
+    >
+      {() =>
+        <Form id="payment-form" >
+          {showModal && <WebcamModal setHandleCloseModal={() => setShowModal(false)} setvalidatePicture={setValidatePicture} />}
+
+          <Field type="text" name="name" required
+            className="shadow appearance-none border rounded w-full mt-6 mb-3 py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="name" placeholder="Enter you legal name" />
+            <ErrorMessage name="name" component="div" className="text-red-700 text-sm pt-2 pb-5" />
+
+          <div className="py-6">
+            <CardElement />
+          </div>
+          {/**add notif */}
+          {message && <div id="messages" className="text-sm text-red-700" role="alert">{message}</div>}
+          <div className="flex justify-between item-center py-5">
+            <button onClick={handleLogout}
+              className="bg-gray-700 hover:bg-gray-500 text-white font-bold py-2 px-4 border-b-4 border-gray-800 hover:border-gray-600 rounded">
+              Logout
+            </button>
+
+            <button type="submit" form="payment-form" disabled={!stripe || submitting}
+              className="flex items-center bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 border-b-4 border-red-700 hover:border-red-500 rounded">
+              {submitting && <div className="animate-spin rounded-full mr-3 h-4 w-4 border-b-2 border-white-900"></div>}
+              buy now
+            </button>
+          </div>
+
+        </Form>}
+    </Formik>
   )
 };
 

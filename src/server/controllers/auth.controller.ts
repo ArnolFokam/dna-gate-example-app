@@ -15,7 +15,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
     
     // check the user exists
     if (exists) {
-        res.status(400).send({ message: 'User already exists.' });
+        res.status(400).send({ message: 'User already exists' });
         return;
     }
 

@@ -46,7 +46,7 @@ const Home = () => {
             {/*Auth Card Container*/}
             <div className="grid place-items-center mx-2 my-20 py-20">
                 {/*Auth Card*/}
-                <div className="w-11/12 p-12 sm:w-8/12 md:w-8/12 lg:w-5/12 2xl:w-4/12 
+                <div className="w-11/12 p-12 sm:w-8/12 md:w-6/12 lg:w-5/12 2xl:w-4/12 
                 px-6 py-10 sm:px-10 sm:py-6 
                 bg-white rounded-lg shadow-md lg:shadow-lg">
 
@@ -60,7 +60,7 @@ const Home = () => {
                         you will be prompted to provide your facial features so we can verify that the payment comes from
                         you.
                     </p>
-                    <div className="pb-8 pt-8">
+                    <div className="pb-8 pt-8 flex row justify-center">
                         <div className="flex max-w-md bg-white shadow-lg rounded-lg overflow-hidden">
                             <div className="w-1/3 bg-cover"
                                 style={{ backgroundImage: "url('https://images.unsplash.com/photo-1494726161322-5360d4d0eeae?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80')" }}>

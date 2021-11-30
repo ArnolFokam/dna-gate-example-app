@@ -42,7 +42,6 @@ export const RegisterSlice = createSlice({
                 state.registrationSuccess = false;
             })
             .addCase(handleRegister.rejected, (state, action) => {
-                console.log((action.error as AxiosError).response!);
                 return {
                     ...initialState,
                     registrationFailure: true,

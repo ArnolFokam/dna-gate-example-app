@@ -15,7 +15,7 @@ export const checkDuplicateEmail = (req: Request, res: Response, next: NextFunct
         
         if (user) {
             res.status(400).send({
-                message: "User already exists!"
+                message: "User already exists"
             });
             return;
         }

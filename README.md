@@ -51,9 +51,3 @@ Arnol Fokam - [@ArnolFokam](https://twitter.com/arnolfokam)
 Project Link: [https://github.com/ArnolFokam/dna-gate](https://github.com/ArnolFokam/dna-gate-backend)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-## Acknowledgments
-
-* [Modzy](https://www.modzy.com/) (Computer Vision pre-trained models)
-
-<p align="right">(<a href="#top">back to top</a>)</p>

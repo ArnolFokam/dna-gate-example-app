@@ -4,12 +4,12 @@ import { Request, Response, NextFunction } from "express";
 
 import db from "./../models";
 import { SECRET_KEY } from "./../config/auth.config";
-import { saveFacialEmbedding, verifyFacialEmbedding } from "./../services/dna-gate.services";
+import { saveBiometricEmbedding, verifyFacialEmbedding } from "./../services/dna-gate.services";
 
 const UserSchema = db.user;
 
 export const signup = async (req: Request, res: Response, next: NextFunction) => {
-    const { name, email, password, image } = req.body;
+    const { name, email, password, image, recording } = req.body;
 
     const exists = await UserSchema.exists({email: email});
     
@@ -20,7 +20,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
     }
 
     //const faceId = await fe
-    const {biometricId, error} = await saveFacialEmbedding(image);
+    const {biometricId, error} = await saveBiometricEmbedding(image, recording);
     if (error) {
         res.status(400).send({ message: error });
         return;

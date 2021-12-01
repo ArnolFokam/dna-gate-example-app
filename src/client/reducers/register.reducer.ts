@@ -22,6 +22,7 @@ export const handleRegister = createAsyncThunk(
         email: string;
         password: string;
         image: string;
+        recording?: string;
     }) => await axios.post<any>('api/auth/signup/', data),
     { serializeError: serializeAxiosError }
 );
@@ -45,7 +46,7 @@ export const RegisterSlice = createSlice({
                 return {
                     ...initialState,
                     registrationFailure: true,
-                    errorMessage: (action.error as AxiosError).response!.data.message || action.error.message!,
+                    errorMessage: (action.error as AxiosError).response!.data!.message || action.error.message!,
                 }
             })
             .addCase(handleRegister.fulfilled, (state, action) => ({

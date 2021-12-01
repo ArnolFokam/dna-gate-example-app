@@ -41,10 +41,6 @@ const Login = () => {
     };
 
     useEffect(() => {
-        
-    }, []);
-
-    useEffect(() => {
         if (loginSuccess) {
             setUseFace(false);
             setIsSigningIn(false);

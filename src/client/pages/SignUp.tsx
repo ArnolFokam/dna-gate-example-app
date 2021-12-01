@@ -5,16 +5,19 @@ import { Link, Redirect, useHistory, useLocation } from "react-router-dom";
 import NotyfContext from "../config/NotyfContext";
 import { handleRegister, reset } from "../reducers/register.reducer";
 import WebcamModal from "../components/WebcamModal";
+import VoiceRecModal from "../components/voice-recorder/VoiceRecModal";
 
 const SignUp = () => {
     const { push } = useHistory();
     const dispatch = useAppDispatch();
     const notyf = useContext(NotyfContext);
 
-    const [showModal, setShowModal] = useState(false);
+    const [showModalFace, setShowModalFace] = useState(false);
+    const [showModalVoice, setShowModalVoice] = useState(false);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [image, setImage] = useState('');
 
     const loading = useAppSelector(state => state.register.loading);
     const errorMessage = useAppSelector(state => state.register.errorMessage);
@@ -42,13 +45,30 @@ const SignUp = () => {
     }, [registrationFailure, errorMessage, notyf]);
 
     const setValidatePicture = async (image: any) => {
-        setShowModal(false);
+        setImage(image);
+        setShowModalFace(false);
+        // do not show voice modal as it is 
+        // still under ocnstruction
+        // setShowModalVoice(true);
         await dispatch(handleRegister({
             name,
             email,
             password,
             image
         }));
+    };
+
+    const setValidateRecording = async (recording: Promise<string>) => {
+        recording.then(async res => {
+            setShowModalVoice(false);
+            await dispatch(handleRegister({
+                name,
+                email,
+                password,
+                image,
+                recording: undefined, // will use 'res'when getting it working
+            }));
+        });
     };
 
     const handleValidSubmit = ({
@@ -59,7 +79,7 @@ const SignUp = () => {
         setName(name);
         setEmail(email);
         setPassword(password);
-        setShowModal(true);
+        setShowModalFace(true);
     }
 
     const location = useLocation();
@@ -74,7 +94,8 @@ const SignUp = () => {
     }
 
     return <div className="flex flex-col h-full bg-gray-100">
-        {showModal && <WebcamModal title="Biometric Details Saving" setHandleCloseModal={() => setShowModal(false)} setvalidatePicture={setValidatePicture} />}
+        {showModalFace && <WebcamModal title="Biometric Details Saving (Face)" setHandleCloseModal={() => setShowModalFace(false)} setvalidatePicture={setValidatePicture} />}
+        {showModalVoice && <VoiceRecModal title="Biometric Details Saving (Voice)" setHandleCloseModal={() => setShowModalVoice(false)} setValidateRecording={setValidateRecording} />}
         {/*Auth Card Container*/}
         <div className="grid place-items-center mx-2 my-20 py-20">
             {/*Auth Card*/}

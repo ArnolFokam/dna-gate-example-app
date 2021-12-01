@@ -7,7 +7,7 @@ import { Readable } from "stream";
 
 global.atob = require("atob");
 
-function b64toBlob(dataURI: string) {
+function b64toBlob(dataURI: string, type: string = 'image/jpeg') {
     
     var byteString = atob(dataURI.split(',')[1]);
     var ab = new ArrayBuffer(byteString.length);
@@ -16,13 +16,20 @@ function b64toBlob(dataURI: string) {
     for (var i = 0; i < byteString.length; i++) {
         ia[i] = byteString.charCodeAt(i);
     }
-    return new Blob([ab], { type: 'image/jpeg' });
+    return new Blob([ab], { type: type });
 }
 
-export const saveFacialEmbedding = async (face: string) => {
+export const saveBiometricEmbedding = async (face?: string | null, recording?: string | null) => {
 
     const form = new FormData();
-    form.set("face_image", b64toBlob(face), "face.jpeg");
+
+    if(face) {
+        form.set("face_image", b64toBlob(face), "face.jpeg");
+    }
+
+    if (recording) {
+        form.set("voice_recording", b64toBlob(recording, 'audio/wav'), "voice.wav");
+    }
 
     const encoder = new FormDataEncoder(form)
     return await got.post(DNA_GATE_URL! + "/api/biometrics/info/",

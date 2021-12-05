@@ -21,7 +21,7 @@ export const handleRegister = createAsyncThunk(
         name: string;
         email: string;
         password: string;
-        image: string;
+        image?: string;
         recording?: string;
     }) => await axios.post<any>('api/auth/signup/', data),
     { serializeError: serializeAxiosError }

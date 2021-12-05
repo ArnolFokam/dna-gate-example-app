@@ -5,18 +5,25 @@ import { FormData, Blob } from 'formdata-node';
 import {FormDataEncoder} from "form-data-encoder";
 import { Readable } from "stream";
 
+export const Biometrics = {
+    voice: "voice",
+    face: "face"
+}
+
 global.atob = require("atob");
 
-function b64toBlob(dataURI: string, type: string = 'image/jpeg') {
-    
-    var byteString = atob(dataURI.split(',')[1]);
-    var ab = new ArrayBuffer(byteString.length);
-    var ia = new Uint8Array(ab);
+function b64toBlob(dataURI: string) {
+    var arr = dataURI.split(','),
+        mime = arr[0].match(/:(.*?);/)![1],
+        byteString = atob(arr[1]),
+        ab = new ArrayBuffer(byteString.length),
+        ia = new Uint8Array(ab);
     
     for (var i = 0; i < byteString.length; i++) {
         ia[i] = byteString.charCodeAt(i);
     }
-    return new Blob([ab], { type: type });
+    
+    return new Blob([ab], { type: mime });
 }
 
 export const saveBiometricEmbedding = async (face?: string | null, recording?: string | null) => {
@@ -28,7 +35,7 @@ export const saveBiometricEmbedding = async (face?: string | null, recording?: s
     }
 
     if (recording) {
-        form.set("voice_recording", b64toBlob(recording, 'audio/wav'), "voice.wav");
+        form.set("voice_recording", b64toBlob(recording), "voice.wav");
     }
 
     const encoder = new FormDataEncoder(form)
@@ -56,11 +63,23 @@ export const saveBiometricEmbedding = async (face?: string | null, recording?: s
 }
 
 export const verifyFacialEmbedding = async (face: string, faceId: string) => {
+    return verifyEmbedding(Biometrics.face, face, faceId);
+}
+
+export const verifyVocalEmbedding = async (voice: string, voiceId: string) => {
+    return verifyEmbedding(Biometrics.voice, voice, voiceId);
+}
+
+export const verifyEmbedding = async (type: string, bio: string, bioId: string) => {
     const form = new FormData();
-    form.set("face_image", b64toBlob(face), "face.jpeg");
+    if (type === Biometrics.face) {
+        form.set("face_image", b64toBlob(bio), "face.jpeg");
+    } else if (type === Biometrics.voice){
+        form.set("voice_recording", b64toBlob(bio), "voice.wav");
+    }
 
     const encoder = new FormDataEncoder(form)
-    return await got.post(DNA_GATE_URL! + "/api/biometrics/info/verify/face/" + faceId,
+    return await got.post(DNA_GATE_URL! +  `/api/biometrics/info/verify/${type}/` + bioId,
         {
             body: Readable.from(encoder),
             headers: {

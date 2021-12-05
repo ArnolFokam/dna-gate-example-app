@@ -33,6 +33,7 @@ interface IAuthParams {
     username: string;
     password?: string;
     image?: string;
+    recording?: string;
 }
 
 export const authenticateWithPassword = createAsyncThunk(
@@ -69,12 +70,31 @@ export const authenticateWithFace = createAsyncThunk(
     }
 );
 
-export const login: (username: string, password?: string, image?: string) => AppThunk =
-    (username, password, image) =>
+export const authenticateWithVoice = createAsyncThunk(
+    'authentication/login_voice',
+    async (auth: IAuthParams) => {
+        return await axios.post<any>('/api/auth/signin/voice', {
+            username: auth.username,
+            recording: auth.recording
+        }, {
+            headers: {
+                "Content-Type": "application/json"
+            },
+        })
+    },
+    {
+        serializeError: serializeAxiosError,
+    }
+);
+
+export const login: (username: string, password?: string, image?: string, recording?: string) => AppThunk =
+    (username, password, image, recording) =>
         async dispatch => {
             let result = null;
             if (image) {
                 result = await dispatch(authenticateWithFace({ username, image }));
+            } else if (recording) {
+                result = await dispatch(authenticateWithVoice({ username, recording }));
             } else {
                 result = await dispatch(authenticateWithPassword({ username, password }));
             }
@@ -153,14 +173,14 @@ export const AuthenticationSlice = createSlice({
             .addCase(getAccount.pending, state => {
                 state.loading = true;
             })
-            .addMatcher(isAnyOf(authenticateWithFace.rejected,
+            .addMatcher(isAnyOf(authenticateWithVoice.rejected, authenticateWithFace.rejected,
                 authenticateWithPassword.rejected), (state, action) => ({
                     ...initialState,
                     errorMessage: (action.error as AxiosError).response!.data.message || action.error.message!,
                     showModalLogin: true,
                     loginError: true,
                 }))
-            .addMatcher(isAnyOf(authenticateWithFace.fulfilled,
+            .addMatcher(isAnyOf(authenticateWithVoice.fulfilled, authenticateWithFace.fulfilled,
                 authenticateWithPassword.fulfilled), (state, action) => ({
                     ...state,
                     loading: false,
@@ -169,7 +189,7 @@ export const AuthenticationSlice = createSlice({
                 }))
 
             .addMatcher(isAnyOf(authenticateWithPassword.pending,
-                authenticateWithFace.pending), state => {
+                authenticateWithVoice.pending, authenticateWithFace.pending), state => {
                     state.loading = true;
                     state.loginError = false;
                     state.loginSuccess = false;

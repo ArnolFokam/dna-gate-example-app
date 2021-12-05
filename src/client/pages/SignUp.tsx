@@ -47,26 +47,18 @@ const SignUp = () => {
     const setValidatePicture = async (image: any) => {
         setImage(image);
         setShowModalFace(false);
-        // do not show voice modal as it is 
-        // still under ocnstruction
-        // setShowModalVoice(true);
-        await dispatch(handleRegister({
-            name,
-            email,
-            password,
-            image
-        }));
+        setShowModalVoice(true);
     };
 
     const setValidateRecording = async (recording: Promise<string>) => {
+        setShowModalVoice(false);
         recording.then(async res => {
-            setShowModalVoice(false);
             await dispatch(handleRegister({
                 name,
                 email,
                 password,
                 image,
-                recording: undefined, // will use 'res'when getting it working
+                recording: res
             }));
         });
     };

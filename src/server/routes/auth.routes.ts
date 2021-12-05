@@ -1,7 +1,7 @@
 import { createPaymentIntent } from "./../controllers/payment.controller";
 import { Request, Response, NextFunction, Application } from "express";
 
-import { signin, signup, signinwithface, checkFacialIdentity } from "./../controllers/auth.controller";
+import { signin, signup, signinWithFace, checkFacialIdentity, checkVocalIdentity, signinWithVoice } from "./../controllers/auth.controller";
 import { checkDuplicateEmail } from "./../middlewares/verifySignUp";
 import { verifyToken } from "./../middlewares/authJwt";
 
@@ -30,8 +30,10 @@ export const routes = (app: Application) => {
 
     // authentication routes
     app.post("/api/auth/signin/pass", signin);
-    app.post("/api/auth/signin/face", signinwithface);
+    app.post("/api/auth/signin/face", signinWithFace);
+    app.post("/api/auth/signin/voice", signinWithVoice);
 
-    // facial verification
+    // biometrics verification
     app.post("/api/auth/check/face", [verifyToken], checkFacialIdentity);
+    app.post("/api/auth/check/voice", [verifyToken], checkVocalIdentity);
 }

@@ -12,7 +12,7 @@ const WebcamModal = ({ setHandleCloseModal, setvalidatePicture, title }: WebcamM
 
   const capture = React.useCallback(
     () => {
-      const imageSrc = webcamRef.current!.getScreenshot({ width: 256, height: 256 });
+      const imageSrc = webcamRef.current!.getScreenshot({ width: 384, height: 384 });
       setvalidatePicture(imageSrc);
     },
     [webcamRef, setvalidatePicture]

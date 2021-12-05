@@ -1,2 +1,7 @@
 /// <reference types="react-scripts" />
-declare module 'react-voice-recorder';
+interface Window {
+  webkitAudioContext: typeof AudioContext
+  localStream: typeof AudioStream
+}
+
+declare module 'audio-recorder-js';

@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 
 import db from "./../models";
 import { SECRET_KEY } from "./../config/auth.config";
-import { saveBiometricEmbedding, verifyFacialEmbedding } from "./../services/dna-gate.services";
+import { saveBiometricEmbedding, verifyFacialEmbedding, verifyVocalEmbedding } from "./../services/dna-gate.services";
 
 const UserSchema = db.user;
 
@@ -69,7 +69,7 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
     });
 }
 
-export const signinwithface = async (req: Request, res: Response, next: NextFunction) => {
+export const signinWithFace = async (req: Request, res: Response, next: NextFunction) => {
     const {username, image} = req.body;
 
     UserSchema.findOne({ email: username }, async function (err: any, user: any) {
@@ -110,6 +110,63 @@ export const checkFacialIdentity = async (req: any, res: any, next: NextFunction
         if (!user) return res.status(404).send({ message: "Incorrect credentials" });
 
         const {match, error} = await verifyFacialEmbedding(image, user.biometricId);
+        if (error) {
+            res.status(400).send({ message: error });
+            return;
+        }
+
+        if (!match) {
+            return res.status(401).send({
+                accessToken: null,
+                message: "Unrecognized person"
+              });
+        }
+
+        res.status(204).send();  
+    });
+}
+
+export const signinWithVoice = async (req: Request, res: Response, next: NextFunction) => {
+    const {username, recording} = req.body;
+
+    UserSchema.findOne({ email: username }, async function (err: any, user: any) {
+        if (err) return res.status(500).send({ message: err });
+        if (!user) return res.status(404).send({ message: "Incorrect credentials" });
+
+        const {match, error} = await verifyVocalEmbedding(recording, user.biometricId);
+        if (error) {
+            res.status(400).send({ message: error });
+            return;
+        }
+
+        if (!match) {
+            return res.status(401).send({
+                accessToken: null,
+                message: "Unrecognized person"
+              });
+        }
+
+        const token = jwt.sign({ email: user.email }, SECRET_KEY, {
+            expiresIn: 86400 // 24 hours
+          });
+
+          res.status(200).send({
+            access_token: token,
+            token_type: "bearer"
+          });
+        
+    });
+}
+
+export const checkVocalIdentity = async (req: any, res: any, next: NextFunction) => {
+    const { userEmail } = req;
+    const { recording } = req.body;
+    
+    UserSchema.findOne({ email: userEmail }, async function (err: any, user: any) {
+        if (err) return res.status(500).send({ message: err });
+        if (!user) return res.status(404).send({ message: "Incorrect credentials" });
+
+        const {match, error} = await verifyVocalEmbedding(recording, user.biometricId);
         if (error) {
             res.status(400).send({ message: error });
             return;

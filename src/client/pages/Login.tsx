@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "../config/store";
 import { Link, Redirect, useLocation } from "react-router-dom";
 import NotyfContext from "../config/NotyfContext";
 import WebcamModal from "../components/WebcamModal";
+import VoiceRecModal from "../components/voice-recorder/VoiceRecModal";
 
 const Login = () => {
     const dispatch = useAppDispatch();
@@ -13,9 +14,11 @@ const Login = () => {
 
     const [email, setEmail] = useState('');
     const [useFace, setUseFace] = useState(false);
-    const [showModal, setShowModal] = useState(false);
+    const [useVoice, setUseVoice] = useState(false);
+    const [showModalFace, setShowModalFace] = useState(false);
+    const [showModalVoice, setShowModalVoice] = useState(false);
     const [isSigningIn, setIsSigningIn] = useState(false);
-    
+
     const isAuthenticated = useAppSelector(state => state.authentication.isAuthenticated);
     const loginError = useAppSelector(state => state.authentication.loginError);
     const errorMessage = useAppSelector(state => state.authentication.errorMessage);
@@ -29,20 +32,32 @@ const Login = () => {
         dispatch(login(email, password))
     }
 
-    const handleModalShow = (email: string) => {
+    const handleModalShow = (email: string, modal: string) => {
         setEmail(email);
-        setShowModal(true);
+        if (modal === "face") {
+            setShowModalFace(true);
+        } else {
+            setShowModalVoice(true);
+        }
     }
 
-    const handleLoginWithFace = (image: any) => {
-        setShowModal(false);
+    const handleLoginWith = async (bio: Promise<string> | string, modal: string) => {
+        setShowModalFace(false);
+        setShowModalVoice(false);
         setIsSigningIn(true);
-        dispatch(login(email, undefined, image));
+        if (modal === "face") {
+            dispatch(login(email, undefined, bio as string, undefined));
+        } else {
+            (bio as Promise<string>).then((res) => {
+                dispatch(login(email, undefined, undefined, res));
+            });
+        }
     };
 
     useEffect(() => {
         if (loginSuccess) {
             setUseFace(false);
+            setUseVoice(false);
             setIsSigningIn(false);
             notyf.success("Successful authentication");
         }
@@ -51,7 +66,8 @@ const Login = () => {
 
     useEffect(() => {
         if (errorMessage && loginError) {
-            setUseFace(true);
+            setUseFace(false);
+            setUseVoice(false);
             setIsSigningIn(false);
             notyf.error(errorMessage);
             dispatch(clearAuth());
@@ -70,11 +86,14 @@ const Login = () => {
     }
 
     return <div className="flex flex-col h-full bg-gray-100">
-        {showModal && <WebcamModal setHandleCloseModal={() => {
-            setUseFace(false);
-            setShowModal(false);
-            setIsSigningIn(false);
-        }} setvalidatePicture={handleLoginWithFace} />}
+        {showModalFace &&
+            <WebcamModal
+                setHandleCloseModal={() => { setShowModalFace(false) }}
+                setvalidatePicture={(image: string) => { handleLoginWith(image, "face") }} />}
+        {showModalVoice &&
+            <VoiceRecModal
+                setHandleCloseModal={() => { setShowModalVoice(false) }}
+                setValidateRecording={(recording: string) => { handleLoginWith(recording, "voice") }} />}
         {/*Auth Card Container*/}
         <div className="grid place-items-center mx-2 my-20 py-20">
             {/*Auth Card*/}
@@ -106,7 +125,7 @@ const Login = () => {
                             errors.email = 'Invalid email address';
                         }
 
-                        if (!useFace && !values.password) {
+                        if ((!useFace && !useVoice) && !values.password) {
                             errors.password = 'Required';
                         }
 
@@ -115,7 +134,9 @@ const Login = () => {
                     onSubmit={(values, { setSubmitting }) => {
                         setSubmitting(true);
                         if (useFace) {
-                            handleModalShow(values.email);
+                            handleModalShow(values.email, "face");
+                        } else if (useVoice) {
+                            handleModalShow(values.email, "voice");
                         } else {
                             handleLoginWithPassword(values);
                         }
@@ -139,21 +160,31 @@ const Login = () => {
                             <button disabled={isSubmitting || isSigningIn} type="submit" className="w-full py-3 mt-10 bg-gray-800 rounded-sm
                         font-medium text-white uppercase
                         focus:outline-none hover:bg-gray-700 hover:shadow-none flex items-center justify-center" id="login-btn">
-                                {(!useFace && isSigningIn) && <div className="animate-spin rounded-full mr-3 h-4 w-4 border-b-2 border-white-900"></div>}
+                                {(!useFace && !useVoice && isSigningIn) && <div className="animate-spin rounded-full mr-3 h-4 w-4 border-b-2 border-white-900"></div>}
                                 Login with password
                             </button>
                             <p className="text-center uppercase text-gray-500 font-bold py-5">- OR -</p>
-                            {/*Auth Buttton*/}
-                            <button onClick={() => {
-                                setUseFace(true);
-                                submitForm();
-                            }} disabled={isSubmitting || isSigningIn} type="submit" className="w-full py-3 bg-red-600 rounded-sm
+                            <div className="flex justify-between">
+                                {/*Auth Buttton*/}
+                                <button onClick={() => {
+                                    setUseFace(true);
+                                    submitForm();
+                                }} disabled={isSubmitting || isSigningIn} type="submit" className="w-full p-3 mr-3 bg-red-600 rounded-sm
                         font-medium text-white uppercase
                         focus:outline-none hover:bg-red-500 hover:shadow-none flex items-center justify-center" id="login-btn">
-                                {(useFace && isSigningIn) && <div className="animate-spin rounded-full mr-3 h-4 w-4 border-b-2 border-white-900"></div>}
-                                Login with face
-                            </button>
-
+                                    {(useFace && isSigningIn) && <div className="animate-spin rounded-full mr-3 h-4 w-4 border-b-2 border-white-900"></div>}
+                                    Login with face
+                                </button>
+                                <button onClick={() => {
+                                    setUseVoice(true);
+                                    submitForm();
+                                }} disabled={isSubmitting || isSigningIn} type="submit" className="w-full p-3 ml-3 bg-red-600 rounded-sm
+                        font-medium text-white uppercase
+                        focus:outline-none hover:bg-red-500 hover:shadow-none flex items-center justify-center" id="login-btn">
+                                    {(useVoice && isSigningIn) && <div className="animate-spin rounded-full mr-3 h-4 w-4 border-b-2 border-white-900"></div>}
+                                    Login with voice
+                                </button>
+                            </div>
                             {/*Another Auth Routes*/}
                             <div className="flex justify-center mt-8 sm:mb-4 text-sm text-center">
                                 <Link to="/signup" className="flex-2 underline">

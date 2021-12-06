@@ -91,8 +91,8 @@ const SignUp = () => {
         {/*Auth Card Container*/}
         <div className="grid place-items-center mx-2 my-20 py-20">
             {/*Auth Card*/}
-            <div className="w-11/12 p-12 sm:w-8/12 md:w-6/12 lg:w-5/12 2xl:w-4/12 
-                px-6 py-10 sm:px-10 sm:py-6 
+            <div className="w-11/12 p-8 sm:w-8/12 md:w-7/12 lg:w-5/12 2xl:w-4/12 
+                px-6 py-8 sm:px-10 sm:py-6 
                 bg-white rounded-lg shadow-md lg:shadow-lg">
 
                 {/*Card Title*/}

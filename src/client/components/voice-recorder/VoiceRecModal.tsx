@@ -99,7 +99,7 @@ const VoiceRecModal = ({ setHandleCloseModal, setValidateRecording, title }: Voi
                   <div className="py-5 flex-col items-center justify-center align-center text-center">
                     <button className={`relative w-24 h-24 rounded-full bg-white focus:outline-none`} onClick={toggleRecording}>
                       {recording && <span className="animate-ping absolute left-0 h-full w-full rounded-full bg-red-500 opacity-75"></span>}
-                      {recording ? <PauseIcon className="text-red-500 " /> : <PlayIcon className="text-blue-500" />}
+                      {recording ? <PauseIcon className="text-red-500" /> : <PlayIcon className="text-blue-500" />}
                     </button>
                     <Countdown
                       date={Date.now() + 2000}

@@ -53,7 +53,7 @@ const VoiceRecModal = ({ setHandleCloseModal, setValidateRecording, title }: Voi
   }
 
   const stopRecording = async () => {
-    audioRecorder.stream.getTracks().forEach((track: any) => track.stop() ); 
+    audioRecorder.stream.getTracks().forEach((track: any) => track.stop());
     await audioRecorder.stop().then(({ blob }: any) => {
       setBlob(blob);
       handleStopCountdown();
@@ -97,8 +97,9 @@ const VoiceRecModal = ({ setHandleCloseModal, setValidateRecording, title }: Voi
                 <div className="py-5 flex-col flex justify-center items-center">
                   <h3 className="text-center ">Pronounce this 👉 <b>Merry Christmass</b></h3>
                   <div className="py-5 flex-col items-center justify-center align-center text-center">
-                    <button className={`w-24 h-24 rounded-full bg-${recording ? "red" : "blue"}-500 focus:outline-none`} onClick={toggleRecording}>
-                      {recording ? <PauseIcon className=" text-white" /> : <PlayIcon className=" text-white" />}
+                    <button className={`relative w-24 h-24 rounded-full bg-white focus:outline-none`} onClick={toggleRecording}>
+                      {recording && <span className="animate-ping absolute left-0 h-full w-full rounded-full bg-red-500 opacity-75"></span>}
+                      {recording ? <PauseIcon className="text-red-500 " /> : <PlayIcon className="text-blue-500" />}
                     </button>
                     <Countdown
                       date={Date.now() + 2000}
@@ -111,8 +112,8 @@ const VoiceRecModal = ({ setHandleCloseModal, setValidateRecording, title }: Voi
                           <div>00:02</div>
                         }
                         return <div>00:0{seconds}</div>;
-                      }} /> 
-                      <audio controls src={blobUrl} className={`pt-3 pointer-events-${blobUrl ? 'auto' : 'none'} opacity-${blobUrl ? '100' : '30'}`}/>
+                      }} />
+                    <audio controls src={blobUrl} className={`pt-3 pointer-events-${blobUrl ? 'auto' : 'none'} opacity-${blobUrl ? '100' : '30'}`} />
                   </div>
                 </div>
               </div>
